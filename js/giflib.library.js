@@ -11,9 +11,7 @@ var GifFileTypeStruct = [['width', 'i32'],
                          ['aspectByte', 'i32'],
                          ['colorMapObjPtr', 'i32'],
                          ['imageCount', 'i32'],
-                         // THIS IS WRONG FIX IT
-                         // ['image', GifImageDescStruct],
-                         ['image', 'i32'],
+                         ['image', GifImageDescStruct],
                          ['savedImagesPtr', 'i32'],
                          ['extensionBlockCount', 'i32'],
                          ['extensionBlockPtr', 'i32'],
@@ -27,11 +25,23 @@ var makeStruct = function(aStructType, aPtr) {
   var o = {};
   var offset = 0;
   for(var i = 0; i < aStructType.length; ++i) {
-    Object.defineProperty(o, aStructType[i][0], {
-      value: getValue(aPtr + offset, aStructType[i][1])
-    });
-    offset = offset + type_sizes[aStructType[i][1]];
+    if (typeof aStructType[i][1] == 'string') {
+      Object.defineProperty(o, aStructType[i][0], {
+        // TODO: This should probably just overlay the heap
+        value: getValue(aPtr + offset, aStructType[i][1])
+      });
+      offset = offset + type_sizes[aStructType[i][1]];
+    } else if (typeof aStructType[i][1] == 'object') {
+      var struct = makeStruct(aStructType[i][1], aPtr + offset);
+      Object.defineProperty(o, aStructType[i][0], {
+        value: struct
+      });
+      offset = offset + struct.__struct_size;
+    }
   }
+  Object.defineProperty(o, "__struct_size", {
+    value: offset
+  });
   return o;
 };
 

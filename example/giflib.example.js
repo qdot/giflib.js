@@ -21,6 +21,8 @@ $(document).ready(function() {
       console.log(gif.backgroundColor);
       console.log(gif.aspectByte);
       console.log(gif.imageCount);
+      console.log(gif.image.width);
+      console.log(gif.image.height);
     };
     var gifLoadFailed = function (gif) {
       console.log("Load failure!");
