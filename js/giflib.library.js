@@ -59,13 +59,16 @@ var loadGifFile = function(f) {
       // Get data byte size, allocate memory on Emscripten heap, and get pointer
       var nDataBytes = data.length * data.BYTES_PER_ELEMENT;
       var dataPtr = Module._malloc(nDataBytes);
-
       // Copy data to Emscripten heap (directly accessed from Module.HEAPU8)
       var dataHeap = new Uint8Array(Module.HEAPU8.buffer, dataPtr, nDataBytes);
       dataHeap.set(new Uint8Array(data.buffer));
-      var f = Module.ccall('gif_from_js', 'number', ['number'], [dataHeap.byteOffset]);
+      var error = 0;
+      //TODO: Fix passing of error since it's expecting a pointer
+      var f = Module.ccall('DGifOpenJS', 'number', ['number', 'number'], [dataHeap.byteOffset, error]);
+      Module.ccall('DGifSlurp', 'void', ['number'], [f]);
       Module._free(dataHeap.byteOffset);
-      defer.resolve(makeStruct(GifFileTypeStruct, f));
+      var g = makeStruct(GifFileTypeStruct, f);
+      defer.resolve(g);
     }
   };
   h.onprogress = function(e) {
