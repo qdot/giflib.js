@@ -2,7 +2,7 @@ var GifImageDescStruct = [['left', 'i32'],
                           ['top', 'i32'],
                           ['width', 'i32'],
                           ['height', 'i32'],
-                          ['interlace', 'i8'],
+                          ['interlace', 'i32'],
                           ['colorMapObjPtr', 'i32']];
 var GifFileTypeStruct = [['width', 'i32'],
                          ['height', 'i32'],
