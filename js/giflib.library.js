@@ -69,6 +69,9 @@ var makeStruct = function(aStructType, aPtr) {
   Object.defineProperty(o, "__struct_size", {
     value: offset
   });
+  Object.defineProperty(o, "__struct_origin", {
+    value: aPtr
+  });
   return o;
 };
 
@@ -109,4 +112,12 @@ var loadGifFile = function(f) {
   };
   h.readAsArrayBuffer(f);
   return promise;
+};
+
+var closeGifFile = function(fileStruct) {
+  var errorPtr = Module._malloc(4);
+  Module.ccall('DGifCloseFile', 'number', ['number', 'number'], [fileStruct.__struct_origin, errorPtr]);
+  var error = getValue(errorPtr);
+  Module._free(errorPtr);
+  return error;
 };
