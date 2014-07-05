@@ -1,7 +1,7 @@
 BUILD_DIR=$(shell pwd)/build
 EMSCRIPTEN_DIR=/home/qdot/code/mozbuild/emscripten
 GIFLIB_DIR=$(shell pwd)/giflib-5.1.0
-EXPORT_FUNCS="['_DGifOpenJS', '_infunc', '_DGifOpen', '_DGifSlurp', '_DGifCloseFile']"
+EXPORT_FUNCS="['_DGifOpenJS', '_infunc', '_DGifOpen', '_DGifSlurp', '_DGifCloseFile', '_PrintColors']"
 TOTAL_MEMORY=32000000
 
 .PHONY: download configure bootstrap release debug debug-opt clean all default
@@ -10,14 +10,16 @@ default: all
 
 all: bootstrap release
 
-bootstrap: $(GIFLIB_DIR)
+bootstrap: $(GIFLIB_DIR) $(BUILD_DIR)
+
+$(BUILD_DIR): $(GIFLIB_DIR)
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) && $(EMSCRIPTEN_DIR)/emconfigure $(GIFLIB_DIR)/configure --disable-shared
 
 $(GIFLIB_DIR):
 	wget "http://downloads.sourceforge.net/project/giflib/giflib-5.1.0.tar.bz2"
 	tar xf giflib-5.1.0.tar.bz2
 	rm giflib-5.1.0.tar.bz2
-	mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR) && $(EMSCRIPTEN_DIR)/emconfigure $(GIFLIB_DIR)/configure --disable-shared
 
 release: bootstrap
 	cd $(BUILD_DIR) && $(EMSCRIPTEN_DIR)/emmake make
