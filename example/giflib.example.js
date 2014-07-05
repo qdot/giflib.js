@@ -29,6 +29,7 @@ $(document).ready(function() {
       difference.setTime(finish.getTime() - start.getTime());
       console.log("TIME: " + difference.getMilliseconds() );
       console.log("Finished");
+      closeGifFile(gif);
     };
     var gifLoadFailed = function (error) {
       console.log("Load failure! Error Code: " + error);
