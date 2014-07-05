@@ -1,9 +1,36 @@
+var GifColorTypeStruct = [['red', 'i32'],
+                          ['green', 'i32'],
+                          ['blue', 'i32']];
+
+var ColorMapObjectStruct = [['colorCount', 'i32'],
+                            ['bitsPerPixel', 'i32'],
+                            ['sortFlag', 'i32'],
+                            ['gifColorTypePtr', 'i32']];
+
+// TODO: This is... not horribly useful this way
+var ExtensionTypes = { 0x00: "continuation subblock",
+                       0xfe: "comment",
+                       0xf9: "graphics control",
+                       0x01: "plaintext",
+                       0xff: "application block"};
+
+var ExtensionBlockStruct = [['byteCount', 'i32'],
+                            ['bytesPtr', 'i32'],
+                            ['function', 'i32']];
+
+
 var GifImageDescStruct = [['left', 'i32'],
                           ['top', 'i32'],
                           ['width', 'i32'],
                           ['height', 'i32'],
                           ['interlace', 'i32'],
                           ['colorMapObjPtr', 'i32']];
+
+var SavedImageStruct = [['imageDesc', GifImageDescStruct],
+                        ['rasterBitsPtr', 'i32'],
+                        ['extensionBlockCount', 'i32'],
+                        ['extensionBlockPtr', 'i32']];
+
 var GifFileTypeStruct = [['width', 'i32'],
                          ['height', 'i32'],
                          ['colorResolution', 'i32'],
