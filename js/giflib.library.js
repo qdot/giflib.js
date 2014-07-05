@@ -54,8 +54,9 @@ var makeStruct = function(aStructType, aPtr) {
   for(var i = 0; i < aStructType.length; ++i) {
     if (typeof aStructType[i][1] == 'string') {
       Object.defineProperty(o, aStructType[i][0], {
-        // TODO: This should probably just overlay the heap
-        value: getValue(aPtr + offset, aStructType[i][1])
+        get: function(loc, type) {
+          return getValue(loc, type[1]);
+        }.bind(this, aPtr + offset, aStructType[i])
       });
       offset = offset + type_sizes[aStructType[i][1]];
     } else if (typeof aStructType[i][1] == 'object') {
