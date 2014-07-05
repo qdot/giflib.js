@@ -19,6 +19,10 @@ running giflib through emscripten, we can now stay up to date with the
 main native gif decoding library, while enjoying the added benefit of
 asm.js optimizations.
 
+This speed doesn't come without a cost, however. giflib.js can be
+quite heavy in terms of both library size (~175k) and memory used (We
+currently have a 32MB heap in order to deal with large images).
+
 Note that giflib.js is not meant to replace any of the above projects.
 It is all about making encoding/decoding as fast as possible. The plan
 is actually to submit patches to provide seperate loading paths for
@@ -63,3 +67,12 @@ or the seperate debug files.
     While the reader consists solely of a memcpy, having that compiled
     makes for about a 30% speed up over sending in a function pointer
     for a non-asm.js reader function.
+
+* The library is big. Can I minify it more?
+  * Not recommended. Heavier minification will only shave off about
+    20k, and on a couple of minifiers I've run it through, it reduces
+    performance by about 50%.
+
+* I'm trying to use gifs that are erroring out due to running out of
+heap. What should I do?
+  * Up the TOTAL_MEMORY value in the makefile and rebuild.
