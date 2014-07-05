@@ -85,20 +85,32 @@ var loadGifFile = function(f) {
   var h = new FileReader();
   h.onloadend = function(evt) {
     if (evt.target.readyState == FileReader.DONE) {
-      var myTypedArray = evt.target.result;
-      var data = new Uint8Array(myTypedArray, 0, myTypedArray.byteLength);
-      // Get data byte size, allocate memory on Emscripten heap, and get pointer
+      var rawFile = evt.target.result;
+      var data = new Uint8Array(rawFile, 0, rawFile.byteLength);
       var nDataBytes = data.length * data.BYTES_PER_ELEMENT;
-      var dataPtr = Module._malloc(nDataBytes);
-      // Copy data to Emscripten heap (directly accessed from Module.HEAPU8)
-      var dataHeap = new Uint8Array(Module.HEAPU8.buffer, dataPtr, nDataBytes);
-      dataHeap.set(new Uint8Array(data.buffer));
-      var error = 0;
-      //TODO: Fix passing of error since it's expecting a pointer
-      var f = Module.ccall('DGifOpenJS', 'number', ['number', 'number'], [dataHeap.byteOffset, error]);
-      Module.ccall('DGifSlurp', 'void', ['number'], [f]);
-      Module._free(dataHeap.byteOffset);
-      var g = makeStruct(GifFileTypeStruct, f);
+      var rawFilePtr = Module._malloc(nDataBytes);
+      var rawFileHeap = new Uint8Array(Module.HEAPU8.buffer, rawFilePtr, nDataBytes);
+      rawFileHeap.set(new Uint8Array(data.buffer));
+
+      var errorPtr = Module._malloc(4);
+
+      var f = Module.ccall('DGifOpenJS', 'number', ['number', 'number'], [rawFileHeap.byteOffset, errorPtr]);
+
+      var g;
+      if (!f) {
+        var error = getValue(errorPtr, 'i32');
+        defer.reject(error);
+      } else {
+        error = Module.ccall('DGifSlurp', 'void', ['number'], [f]);
+        if (error == 0) {
+          console.log("Slurp Error: " + error);
+          g = makeStruct(GifFileTypeStruct, f);
+          console.log(g);
+          defer.reject(g.error);
+        }
+      }
+      Module._free(rawFileHeap.byteOffset);
+      Module._free(errorPtr);
       defer.resolve(g);
     }
   };
