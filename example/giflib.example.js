@@ -21,7 +21,14 @@ $(document).ready(function() {
       var difference = new Date();
       difference.setTime(finish.getTime() - start.getTime());
       console.log("TIME: " + difference.getMilliseconds() );
-      closeGifFile(gif);
+      var tmpCanvas = document.getElementById('gifcanvas');
+      start = new Date();
+      copyImageToCanvas(gif, 0, tmpCanvas);
+      finish = new Date();
+      difference = new Date();
+      difference.setTime(finish.getTime() - start.getTime());
+      console.log("TIME: " + difference.getMilliseconds() );
+      console.log("Finished");
     };
     var gifLoadFailed = function (error) {
       console.log("Load failure! Error Code: " + error);

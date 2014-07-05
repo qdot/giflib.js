@@ -7,14 +7,15 @@
     <script type="text/javascript" src="../build/giflib.emscripten.js"></script>
     <script type="text/javascript" src="../js/giflib.library.js"></script>
     <!-- Release Library -->
-    <!--<script type="text/javascript" src="../build/giflib.js"></script>-->
-    <!-- Example Helper Library -->
+    <!-- <script type="text/javascript" src="../release/giflib.js"></script> -->
+
     <script type="text/javascript" src="giflib.example.js"></script>
     <title>giftic</title>
   </head>
   <body>
     <input type='text' id='fileselect'/>
 		<button type="button" id='filebutton' class="btn btn-default"><strong>Browse for File</strong></button><button type="button" id='gobutton' class="btn btn-default"><strong>Go</strong></button>
-		<input type='file' id='fileinput' accept='image/gif' />
+		<input type='file' id='fileinput' accept='image/gif' /><br />
+    <canvas id='gifcanvas'></canvas>
   </body>
 </html>
