@@ -101,11 +101,10 @@ var loadGifFile = function(f) {
         var error = getValue(errorPtr, 'i32');
         defer.reject(error);
       } else {
+        g = makeStruct(GifFileTypeStruct, f);
         error = Module.ccall('DGifSlurp', 'void', ['number'], [f]);
         if (error == 0) {
-          console.log("Slurp Error: " + error);
-          g = makeStruct(GifFileTypeStruct, f);
-          console.log(g);
+          console.log("Slurp Error: " + error + " " + g.error);
           defer.reject(g.error);
         }
       }
