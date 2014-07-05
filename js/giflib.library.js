@@ -1,6 +1,6 @@
-var GifColorTypeStruct = [['red', 'i32'],
-                          ['green', 'i32'],
-                          ['blue', 'i32']];
+var GifColorTypeStruct = [['red', 'i8'],
+                          ['green', 'i8'],
+                          ['blue', 'i8']];
 
 var ColorMapObjectStruct = [['colorCount', 'i32'],
                             ['bitsPerPixel', 'i32'],
