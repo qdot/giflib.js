@@ -175,7 +175,7 @@ var copyImageToCanvas = function(gif, imageIdx, canvas) {
                                  img.imageDesc.top,
                                  img.imageDesc.width,
                                  img.imageDesc.height);
-  arr = new Uint8ClampedArray(Module.HEAPU8.subarray(rawImgData, rawImgData + (gif.width * gif.height * 4)));
+  arr = new Uint8ClampedArray(Module.HEAPU8.subarray(rawImgData, rawImgData + (img.imageDesc.width * img.imageDesc.height * 4)));
   cData.data.set(arr);
   Module._free(rawImgData);
   frame.putImageData(cData, img.imageDesc.left, img.imageDesc.top);
