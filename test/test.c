@@ -1,9 +1,14 @@
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include "gif_lib.h"
 
 int main(int argc, char** argv) {
+  if(argc != 2) {
+    printf("test util requires gif file argument\n");
+    exit(1);
+  }
   int err;
   GifFileType* gif = DGifOpenFileName(argv[1], &err);
   if(!gif) {
