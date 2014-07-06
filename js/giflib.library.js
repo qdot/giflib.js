@@ -59,7 +59,9 @@ var makeStruct = function(aStructType, aPtr) {
         });
       } else {
         Object.defineProperty(o, aStructType[i][0], {
-          value: Module.HEAP32[(aPtr + offset) >> 2]
+            get: function(loc, type) {
+              return getValue(loc, type[1]);
+            }.bind(this, aPtr + offset, aStructType[i])
         });
       }
       offset = offset + type_sizes[aStructType[i][1]];
