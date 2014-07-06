@@ -47,10 +47,13 @@ directory), so compilation is not required.
 ## Compilation
 
 However, if you do want to compile giflib.js, you should have the most
-recent version of emscripten. Just run "make" in the repo, and it will
-download the compatible version of giflib (currently 5.1.0), create an
-out of source build directory, and build the javascript libraries.
-There are other make targets for doing debug builds, tests, etc.
+recent version of [emscripten](https://github.com/kripken/emscripten/)
+and the
+[closure compiler](https://developers.google.com/closure/compiler/).
+Just run "make" in the repo, and it will download the compatible
+version of giflib (currently 5.1.0), create an out of source build
+directory, and build the javascript libraries. There are other make
+targets for doing debug builds, tests, etc.
 
 ## Example
 
