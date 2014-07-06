@@ -37,7 +37,8 @@ testc: bootstrap $(HOST_LIB_DIR)
 release: bootstrap
 	cd $(BUILD_DIR) && $(EMSCRIPTEN_DIR)/emmake make
 	cd $(BUILD_DIR) && $(EMSCRIPTEN_DIR)/emcc -O3 lib/*.o ../src/giflib.js.c -o $(BUILD_DIR)/giflib.emscripten.js -I$(GIFLIB_DIR)/lib -s EXPORTED_FUNCTIONS=$(EXPORT_FUNCS) -s TOTAL_MEMORY=$(TOTAL_MEMORY)
-	cat $(BUILD_DIR)/giflib.emscripten.js $(BUILD_DIR)/../js/giflib.library.js > $(BUILD_DIR)/giflib.js
+	closure-compiler --js js/giflib.library.js --js_output_file $(BUILD_DIR)/giflib.library.min.js
+	cat $(BUILD_DIR)/giflib.emscripten.js $(BUILD_DIR)/giflib.library.min.js > $(BUILD_DIR)/giflib.js
 	cp $(BUILD_DIR)/giflib.js $(RELEASE_DIR)
 
 debug: bootstrap
