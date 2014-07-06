@@ -169,36 +169,6 @@ var copyImageToCanvas = function(gif, imageIdx, canvas) {
   canvas.height = gif.height;
   var frame = canvas.getContext('2d');
   var img = getFrameStruct(gif, imageIdx);
-  var colorMap;
-  if (gif.image.colorMapObjPtr != 0) {
-    colorMap = getColorMap(gif.image.colorMapObjPtr);
-  } else {
-    colorMap = getColorMap(gif.colorMapObjPtr);
-  }
-  var colors = getColors(colorMap.colorCount, colorMap.gifColorTypePtr);
-  var cData = frame.getImageData(img.imageDesc.left,
-                                 img.imageDesc.top,
-                                 img.imageDesc.width,
-                                 img.imageDesc.height);
-  var color_index;
-  var color;
-  for (var i = 0; i < (gif.width * gif.height); ++i) {
-    color_index = Module.HEAPU8[img.rasterBitsPtr + i];
-    //if (color_index < 0) color_index = color_index + 256;
-    color = colors[color_index];
-    cData.data[(i) * 4 + 0] = color[0];
-    cData.data[(i) * 4 + 1] = color[1];
-    cData.data[(i) * 4 + 2] = color[2];
-    cData.data[(i) * 4 + 3] = 255;//getValue(img.rasterBitsPtr + (i) , 'i8');
-  }
-  frame.putImageData(cData, img.imageDesc.left, img.imageDesc.top);
-};
-
-var copyImageToCanvasPure = function(gif, imageIdx, canvas) {
-  canvas.width = gif.width;
-  canvas.height = gif.height;
-  var frame = canvas.getContext('2d');
-  var img = getFrameStruct(gif, imageIdx);
   var rawImgData = Module._malloc(gif.width * gif.height * 4);
   Module.ccall('CopyImage', 'void', ['number', 'number', 'number'], [gif.__struct_origin, imageIdx, rawImgData]);
   var cData = frame.getImageData(img.imageDesc.left,

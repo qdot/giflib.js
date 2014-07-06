@@ -35,7 +35,7 @@ $(document).ready(function() {
     var updateFrame = function (gif) {
       var tmpCanvas = document.getElementById('gifcanvas');
       start = new Date();
-      copyImageToCanvasPure(gif, imgIdx, tmpCanvas);
+      copyImageToCanvas(gif, imgIdx, tmpCanvas);
       imgIdx = imgIdx + 1;
       if(imgIdx < gif.imageCount) {
         setTimeout(updateFrame.bind(undefined, gif), 0);
