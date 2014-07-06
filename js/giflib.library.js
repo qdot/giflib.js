@@ -55,17 +55,11 @@ var makeStruct = function(aStructType, aPtr) {
     if (typeof aStructType[i][1] == 'string') {
       if (aStructType[i][1] == 'u8') {
         Object.defineProperty(o, aStructType[i][0], {
-          get: function(loc) {
-            var val = getValue(loc, 'i8');
-            if (val < 0) return val + 256;
-            return val;
-          }.bind(this, aPtr + offset)
+          value: Module.HEAPU8[aPtr + offset]
         });
       } else {
         Object.defineProperty(o, aStructType[i][0], {
-          get: function(loc, type) {
-            return getValue(loc, type[1]);
-          }.bind(this, aPtr + offset, aStructType[i])
+          value: Module.HEAP32[(aPtr + offset) >> 2]
         });
       }
       offset = offset + type_sizes[aStructType[i][1]];
@@ -197,4 +191,20 @@ var copyImageToCanvas = function(gif, imageIdx, canvas) {
   }
   frame.putImageData(cData, img.imageDesc.left, img.imageDesc.top);
 };
+
+var copyImageToCanvasPure = function(gif, imageIdx, canvas) {
+  canvas.width = gif.width;
+  canvas.height = gif.height;
+  var frame = canvas.getContext('2d');
+  var img = getFrameStruct(gif, imageIdx);
+  var rawImgData = Module._malloc(gif.width * gif.height * 4);
+  Module.ccall('CopyImage', 'void', ['number', 'number', 'number'], [gif.__struct_origin, imageIdx, rawImgData]);
+  var cData = frame.getImageData(img.imageDesc.left,
+                                 img.imageDesc.top,
+                                 img.imageDesc.width,
+                                 img.imageDesc.height);
+  arr = new Uint8ClampedArray(Module.HEAPU8.subarray(rawImgData, rawImgData + (gif.width * gif.height * 4)));
+  cData.data.set(arr);
+  Module._free(rawImgData);
+  frame.putImageData(cData, img.imageDesc.left, img.imageDesc.top);
 };

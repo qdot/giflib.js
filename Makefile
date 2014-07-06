@@ -1,7 +1,7 @@
 BUILD_DIR=$(shell pwd)/build
 EMSCRIPTEN_DIR=/home/qdot/code/mozbuild/emscripten
 GIFLIB_DIR=$(shell pwd)/giflib-5.1.0
-EXPORT_FUNCS="['_DGifOpenJS', '_infunc', '_DGifOpen', '_DGifSlurp', '_DGifCloseFile', '_PrintColors']"
+EXPORT_FUNCS="['_DGifOpenJS', '_infunc', '_DGifOpen', '_DGifSlurp', '_DGifCloseFile', '_CopyImage']"
 TOTAL_MEMORY=32000000
 
 .PHONY: download configure bootstrap release debug debug-opt clean all default
