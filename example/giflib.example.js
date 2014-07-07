@@ -13,7 +13,8 @@ $(document).ready(function() {
       return;
     }
     var start = new Date();
-    var g = loadGifFile(document.getElementById('fileinput').files[0]);
+    var giffile = new GifLibFile(document.getElementById('fileinput').files[0]);
+    var g = giffile.load();
 
     var gifLoaded = function (gif) {
       updateFrame(gif);
@@ -22,14 +23,13 @@ $(document).ready(function() {
     var imgIdx = 0;
 
     var updateFrame = function (gif) {
-
       var tmpCanvas = document.getElementById('gifcanvas');
-      copyImageToCanvas(gif, imgIdx, tmpCanvas);
+      giffile.copyImageToCanvas(gif, imgIdx, tmpCanvas);
       imgIdx = imgIdx + 1;
       if(imgIdx < gif.imageCount) {
         setTimeout(updateFrame.bind(undefined, gif), 0);
       } else {
-        closeGifFile(gif);
+        giffile.close(gif);
         console.timeEnd("loading");
       }
     };
