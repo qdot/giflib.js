@@ -1,5 +1,6 @@
 var GifLibFile = function(f) {
   this.file = f;
+  this.decompBuffer = undefined;
   this.GifColorTypeStruct = [['red', 'i8'],
                              ['green', 'i8'],
                              ['blue', 'i8']];
@@ -18,7 +19,7 @@ var GifLibFile = function(f) {
 
   this.ExtensionBlockStruct = [['byteCount', 'i32'],
                                ['bytesPtr', 'i32'],
-                               ['function', 'i32']];
+                               ['func', 'i32']];
 
   this.GifImageDescStruct = [['left', 'i32'],
                              ['top', 'i32'],
@@ -134,6 +135,7 @@ GifLibFile.prototype = {
                        Module._free(rawFileHeap.byteOffset);
                        Module._free(errorPtr);
                        defer.resolve(g);
+                       this.decompBuffer = Module._malloc(g.width * g.height * 4);
                      }
                    }.bind(this));
     h.onprogress = function(e) {
@@ -175,19 +177,20 @@ GifLibFile.prototype = {
     canvas.height = gif.height;
     var frame = canvas.getContext('2d');
     var img = this.getFrameStruct(gif, imageIdx);
-    var rawImgData = Module._malloc(gif.width * gif.height * 4);
-    Module.ccall('CopyImage',
-                 'void',
-                 ['number', 'number', 'number'],
-                 [gif.__struct_origin, imageIdx, rawImgData]);
+    var offset = 0;
+    var farr = new Uint8ClampedArray(this.decompBuffer);
     var cData = frame.getImageData(img.imageDesc.left,
                                    img.imageDesc.top,
                                    img.imageDesc.width,
                                    img.imageDesc.height);
+    Module.ccall('CopyImage',
+                 'void',
+                 ['number', 'number', 'number'],
+                 [gif.__struct_origin, imageIdx, this.decompBuffer]);
     var imgSize = img.imageDesc.width * img.imageDesc.height * 4;
-    var arr = Module.HEAPU8.subarray(rawImgData, rawImgData + imgSize);
+    var arr = Module.HEAPU8.subarray(this.decompBuffer, this.decompBuffer + imgSize);
     cData.data.set(new Uint8ClampedArray(arr));
-    Module._free(rawImgData);
+    //Module._free(rawImgData);
     frame.putImageData(cData, img.imageDesc.left, img.imageDesc.top);
   }
 };
