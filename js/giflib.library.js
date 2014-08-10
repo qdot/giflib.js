@@ -192,5 +192,18 @@ GifLibFile.prototype = {
     cData.data.set(new Uint8ClampedArray(arr));
     //Module._free(rawImgData);
     frame.putImageData(cData, img.imageDesc.left, img.imageDesc.top);
+  },
+
+  getFrameDelay: function(gif, imageIdx) {
+    var img = this.getFrameStruct(gif, imageIdx);
+    var extensionBlock = this.makeStruct(this.ExtensionBlockStruct, img.extensionBlockPtr);
+
+    //The delay is stored in the second and third extension data bytes.
+    var extensionBytes = Module.getValue(extensionBlock.bytesPtr, '*');
+    var low = (extensionBytes & 0x0000ff00) >> 8;
+    var high = (extensionBytes & 0x00ff0000) >> 8;
+
+    //Times 10 because it's stored as hundreds of a second and JS usually uses thousands (ms).
+    return (high | low) * 10;
   }
 };
