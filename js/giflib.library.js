@@ -199,7 +199,7 @@ GifLibFile.prototype = {
     var extensionBlock = this.makeStruct(this.ExtensionBlockStruct, img.extensionBlockPtr);
 
     //The delay is stored in the second and third extension data bytes.
-    var extensionBytes = Module.getValue(extensionBlock.bytesPtr, '*');
+    var extensionBytes = Module.getValue(extensionBlock.bytesPtr, 'i32');
     var low = (extensionBytes & 0x0000ff00) >> 8;
     var high = (extensionBytes & 0x00ff0000) >> 8;
 
